@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+                  xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0udu3qi"
+                  targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.42.0"
+                  modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.24.0">
+    <bpmn:process id="userLeavingProcess-1" name="用户请假流程" isExecutable="true" camunda:historyTimeToLive="30">
+        <bpmn:userTask id="Activity_0l86k2s" name="用户请假" camunda:assignee="zhangsan">
+            <bpmn:extensionElements>
+                <camunda:formData>
+                    <camunda:formField id="user" label="用户" type="string"/>
+                    <camunda:formField id="day" label="请假天数" type="long"/>
+                    <camunda:formField id="reason" label="原因" type="string"/>
+                </camunda:formData>
+            </bpmn:extensionElements>
+            <bpmn:incoming>Flow_1n1ssxk</bpmn:incoming>
+            <bpmn:outgoing>sid-43e89644-f94b-4663-b033-8a30e303962f</bpmn:outgoing>
+        </bpmn:userTask>
+        <bpmn:userTask id="Activity_1exm5nm" name="人事审批" camunda:assignee="huangshen">
+            <bpmn:extensionElements/>
+            <bpmn:incoming>sid-43e89644-f94b-4663-b033-8a30e303962f</bpmn:incoming>
+            <bpmn:outgoing>Flow_1iblhet</bpmn:outgoing>
+        </bpmn:userTask>
+        <bpmn:sequenceFlow id="sid-43e89644-f94b-4663-b033-8a30e303962f" sourceRef="Activity_0l86k2s"
+                           targetRef="Activity_1exm5nm"/>
+        <bpmn:startEvent id="Event_14x6v4c" name="开始流程">
+            <bpmn:outgoing>Flow_1n1ssxk</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:sequenceFlow id="Flow_1n1ssxk" sourceRef="Event_14x6v4c" targetRef="Activity_0l86k2s"/>
+        <bpmn:endEvent id="Event_05xjpaf" name="结束流程">
+            <bpmn:incoming>Flow_1iblhet</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:sequenceFlow id="Flow_1iblhet" sourceRef="Activity_1exm5nm" targetRef="Event_05xjpaf"/>
+    </bpmn:process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="userLeavingProcess-1">
+            <bpmndi:BPMNShape id="Activity_0tuu48m_di" bpmnElement="Activity_0l86k2s">
+                <dc:Bounds x="250" y="109.99999" width="100" height="80"/>
+                <bpmndi:BPMNLabel/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Event_14x6v4c_di" bpmnElement="Event_14x6v4c">
+                <dc:Bounds x="132" y="132" width="36" height="36"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="128" y="175" width="44" height="14"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Event_05xjpaf_di" bpmnElement="Event_05xjpaf">
+                <dc:Bounds x="482" y="282" width="36" height="36"/>
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="478" y="325" width="44" height="14"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Activity_12dp2le_di" bpmnElement="Activity_1exm5nm">
+                <dc:Bounds x="250" y="260" width="100" height="80"/>
+                <bpmndi:BPMNLabel/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="edge-1099331e-b1d9-400a-9f26-4ebf6e9b61bd"
+                             bpmnElement="sid-43e89644-f94b-4663-b033-8a30e303962f">
+                <di:waypoint x="300" y="190"/>
+                <di:waypoint x="300" y="260"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="Flow_1n1ssxk_di" bpmnElement="Flow_1n1ssxk">
+                <di:waypoint x="168" y="150"/>
+                <di:waypoint x="250" y="150"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="Flow_1iblhet_di" bpmnElement="Flow_1iblhet">
+                <di:waypoint x="350" y="300"/>
+                <di:waypoint x="482" y="300"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>

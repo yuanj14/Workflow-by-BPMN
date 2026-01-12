@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_1u1elsb" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.42.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.24.0">
+  <decision id="Decision_1ymh6m6" name="用户请假自动化决策" camunda:historyTimeToLive="30">
+    <decisionTable id="DecisionTable_1sviso2">
+      <input id="Input_1" label="请假原因">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>reason</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="通过" name="approve" typeRef="boolean" />
+      <rule id="DecisionRule_1qi8vhz">
+        <inputEntry id="UnaryTests_1wq1jef">
+          <text>"个人原因"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ju8pxe">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_14h6gok">
+        <inputEntry id="UnaryTests_0ffablm">
+          <text>not("个人原因")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_03vo1pr">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape id="Decision_1ymh6m6_di" dmnElementRef="Decision_1ymh6m6">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

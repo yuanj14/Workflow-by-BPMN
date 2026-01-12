@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0udu3qi" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.42.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.24.0">
+  <bpmn:process id="userLeavingProcess-1" name="用户请假流程" isExecutable="true" camunda:historyTimeToLive="30">
+    <bpmn:startEvent id="StartEvent_1" name="开始">
+      <bpmn:outgoing>Flow_1eu4znh</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_08u2dtt" name="结束">
+      <bpmn:incoming>Flow_0ewo9gu</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1eu4znh" sourceRef="StartEvent_1" targetRef="Activity_0l86k2s" />
+    <bpmn:userTask id="Activity_0l86k2s" name="用户请假" camunda:assignee="zhangsan">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="user" label="用户" type="string" />
+          <camunda:formField id="day" label="请假天数" type="long" />
+          <camunda:formField id="reason" label="原因" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1eu4znh</bpmn:incoming>
+      <bpmn:outgoing>Flow_01wsu63</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_01wsu63" sourceRef="Activity_0l86k2s" targetRef="Activity_1exm5nm" />
+    <bpmn:sequenceFlow id="Flow_0ewo9gu" sourceRef="Activity_1exm5nm" targetRef="Event_08u2dtt" />
+    <bpmn:userTask id="Activity_1exm5nm" name="人事审批" camunda:assignee="huangshen">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_01wsu63</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ewo9gu</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="userLeavingProcess-1">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="112" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="189" y="155" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_08u2dtt_di" bpmnElement="Event_08u2dtt">
+        <dc:Bounds x="612" y="112" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="619" y="155" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_12dp2le_di" bpmnElement="Activity_1exm5nm">
+        <dc:Bounds x="440" y="90" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tuu48m_di" bpmnElement="Activity_0l86k2s">
+        <dc:Bounds x="250" y="90" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1eu4znh_di" bpmnElement="Flow_1eu4znh">
+        <di:waypoint x="218" y="130" />
+        <di:waypoint x="250" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01wsu63_di" bpmnElement="Flow_01wsu63">
+        <di:waypoint x="350" y="130" />
+        <di:waypoint x="440" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ewo9gu_di" bpmnElement="Flow_0ewo9gu">
+        <di:waypoint x="540" y="130" />
+        <di:waypoint x="612" y="130" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
