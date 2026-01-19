@@ -1,2 +1,27 @@
-*.zip
-*.tar
+joint[
+    "version",
+    "config",
+    "dia",
+    "ui",
+    "layout",
+    "shapes",
+    "format",
+    "connectors",
+    "highlighters",
+    "routers",
+    "anchors",
+    "connectionPoints",
+    "connectionStrategies",
+    "linkTools",
+    "mvc",
+    "setTheme",
+    "env",
+    "util",
+    "com",
+    "alg",
+    "storage",
+    "g",
+    "Vectorizer",
+    "V",
+    "Backbone"
+]
