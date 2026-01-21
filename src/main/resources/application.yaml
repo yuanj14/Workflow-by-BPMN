@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    #    mysql配置
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/camunda?serverTimezone=Asia/Shanghai
+    username: root
+    password: 1234
+    #    H2配置
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:file:./camunda-h2-database;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#    username: sa
+#    password: ""
+#  http://localhost:8080/h2-console
+#  h2:
+#    console:
+#      enabled: true
+
+camunda:
+  bpm:
+    database:
+      type: mysql
+      schema-update: true # 自动更新数据库结构
+    auto-deployment-enabled: false # 自动部署 resources 下的 bpmn文件
+    admin-user:
+      id: demo
+      password: demo
