@@ -12,6 +12,7 @@
       <bpmn:outgoing>Flow_1v441iw</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Activity_0q0j0hf" name="总经理审批" camunda:assignee="demo">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1v441iw</bpmn:incoming>
       <bpmn:outgoing>Flow_0ql0pzt</bpmn:outgoing>
     </bpmn:userTask>
