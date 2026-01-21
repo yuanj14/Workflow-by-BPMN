@@ -32,8 +32,8 @@ public class TaskAssigneeTest {
     @Test
     public void deployFlow() {
         Deployment deploy = repositoryService.createDeployment()
-                .addClasspathResource("static/processResource/flow/任务分配-值表达式.bpmn")
-                .name("任务分配-值表达式部署")
+                .addClasspathResource("static/processResource/flow/任务分配-listener.bpmn")
+                .name("任务分配-Listener部署")
                 .deploy();
         System.out.println("deploy.getId() = " + deploy.getId());
         System.out.println("deploy.getName() = " + deploy.getName());
@@ -49,7 +49,7 @@ public class TaskAssigneeTest {
         // - key: 对应 ACT_RE_PROCDEF 表的 KEY_ 字段（流程定义的key）
         // - 返回的 ProcessInstance 的 id: 对应 ACT_RU_EXECUTION 表的 ID_ 字段（流程实例ID）
         //   同时也对应 ACT_HI_PROCINST 表的 PROC_INST_ID_ 字段（历史流程实例ID）
-        String processDefinitionKey = "Process_0a0q6t3";
+        String processDefinitionKey = "Process_15zd19s";
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey);
         System.out.println("流程实例ID (ACT_RU_EXECUTION.ID_): " + processInstance.getId());
         System.out.println("流程定义KEY (ACT_RE_PROCDEF.KEY_): " + processInstance.getProcessDefinitionId());
