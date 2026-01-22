@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <springProperty scope="context" name="springAppName" source="spring.application.name" defaultValue="unknown-app"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%d{dd-HH:mm} ️%highlight(%-5level) 💖%green([%property{springAppName}]) %magenta([%thread]) %cyan(%-40.40logger{40}) : %msg%n"/>
+    
+    <!--  控制台输出  -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!-- 格式化输出：%d 表示日期，%thread 表示线程名，%-5level表示级别从左显示5个字符宽度，%logger显示日志记录器的名称， %msg表示日志消息，%n表示换行符  -->
+            <!--             <pattern>%d{MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n</pattern> -->
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    
+    <!--  日志输出级别  -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: Camunda # 应用名称，用于日志中显示
   datasource:
     #    mysql配置
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -14,6 +16,13 @@ spring:
 #  h2:
 #    console:
 #      enabled: true
+
+# 日志配置
+logging:
+  config: classpath:logback-spring.xml # 指定 Logback 配置文件
+  level:
+    root: INFO
+    com.czu.workflow: DEBUG # 项目包日志级别设为 DEBUG，便于查看详细信息
 
 camunda:
   bpm:
