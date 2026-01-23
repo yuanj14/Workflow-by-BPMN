@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.history.HistoricDetail;
 import org.camunda.bpm.engine.history.HistoricVariableInstance;
 import org.camunda.bpm.engine.history.HistoricVariableUpdate;
+import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.IdentityLink;
@@ -101,6 +102,189 @@ public class CandidateTest {
         } else {
             System.out.println("当前登录用户没有候选的Task");
         }
+    }
+
+    /**
+     * 根据候选人组查询所有任务
+     */
+    @Test
+    public void getTasksByCandidateGroup() {
+        String candidateGroup = "jxGroup";
+        
+        // 1. 通过 taskCandidateGroup 查询分配给指定候选组的所有任务
+        List<Task> tasks = taskService.createTaskQuery()
+                .taskCandidateGroup(candidateGroup)
+                .list();
+        
+        log.info("候选人组 '{}' 的任务总数: {}", candidateGroup, tasks != null ? tasks.size() : 0);
+        
+        // 2. 遍历任务列表，输出任务详情
+        if (tasks != null && !tasks.isEmpty()) {
+            for (Task task : tasks) {
+                log.info("=== 任务信息 ===");
+                log.info("任务ID: {}", task.getId());
+                log.info("任务名称: {}", task.getName());
+                log.info("流程实例ID: {}", task.getProcessInstanceId());
+                log.info("当前执行人: {}", task.getAssignee() != null ? task.getAssignee() : "未分配");
+                log.info("创建时间: {}", task.getCreateTime());
+                
+                // 3. 查询该任务的所有候选组（一个任务可能分配给多个组）
+                List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(task.getId());
+                if (identityLinks != null && !identityLinks.isEmpty()) {
+                    for (IdentityLink link : identityLinks) {
+                        if (link.getGroupId() != null) {
+                            log.info("候选组: {}, 类型: {}", link.getGroupId(), link.getType());
+                        }
+                    }
+                }
+            }
+        } else {
+            log.info("候选人组 '{}' 当前没有待处理的任务", candidateGroup);
+        }
+    }
+
+    /**
+     * 查询用户所在组的所有可拾取任务
+     */
+    @Test
+    public void getTasksByUserGroups() {
+        String userId = "wowo";
+        
+        // 1. 先查询用户所属的所有分组
+        List<Group> groups = identityService.createGroupQuery()
+                .groupMember(userId)
+                .list();
+        
+        log.info("用户 '{}' 所属分组数: {}", userId, groups != null ? groups.size() : 0);
+        
+        if (groups != null && !groups.isEmpty()) {
+            // 2. 遍历用户所属的每个分组，查询该组的任务
+            for (Group group : groups) {
+                log.info("--- 查询分组 '{}' 的任务 ---", group.getName());
+                
+                List<Task> tasks = taskService.createTaskQuery()
+                        .taskCandidateGroup(group.getId())
+                        .list();
+                
+                log.info("分组 '{}' 的任务数: {}", group.getName(), tasks != null ? tasks.size() : 0);
+                
+                if (tasks != null && !tasks.isEmpty()) {
+                    for (Task task : tasks) {
+                        log.info("任务ID: {}, 任务名称: {}, 当前执行人: {}", 
+                            task.getId(), 
+                            task.getName(), 
+                            task.getAssignee() != null ? task.getAssignee() : "未分配");
+                    }
+                }
+            }
+        } else {
+            log.warn("用户 '{}' 未加入任何分组", userId);
+        }
+    }
+
+    /**
+     * 候选组成员拾取任务
+     * Camunda 7 自动维护组成员权限，只有组成员才能拾取该组的任务
+     */
+    @Test
+    public void claimTaskByGroupMember() {
+        String userId = "wowo";
+        
+        // 1. 查询用户所属的所有分组
+        List<org.camunda.bpm.engine.identity.Group> userGroups = identityService.createGroupQuery()
+                .groupMember(userId)
+                .list();
+        
+        log.info("用户 '{}' 所属分组数: {}", userId, userGroups != null ? userGroups.size() : 0);
+        
+        if (userGroups == null || userGroups.isEmpty()) {
+            log.warn("用户 '{}' 未加入任何分组，无法拾取组任务", userId);
+            return;
+        }
+        
+        // 2. 遍历用户所属的每个分组，查询可拾取的任务
+        boolean taskClaimed = false;
+        for (Group group : userGroups) {
+            log.info("\n--- 检查分组 '{}' (ID: {}) 的可拾取任务 ---", group.getName(), group.getId());
+            
+            // 3. 查询该分组的未分配任务
+            List<Task> tasks = taskService.createTaskQuery()
+                    .taskCandidateGroup(group.getId())
+                    .taskUnassigned()  // 只查询未分配执行人的任务
+                    .list();
+
+            log.info("分组 '{}' 的待拾取任务数: {}", group.getName(), tasks != null ? tasks.size() : 0);
+
+            if (tasks != null && !tasks.isEmpty()) {
+                // 4. 拾取该分组的第一个任务
+                Task task = tasks.get(0);
+                
+                // Camunda 7 会自动验证 userId 是否属于该 candidateGroup
+                // 如果不属于会抛出异常，但由于我们是从用户所属组中查询的，所以一定有权限
+                taskService.claim(task.getId(), userId);
+                
+                log.info("✓ 任务拾取成功！");
+                log.info("  任务ID: {}", task.getId());
+                log.info("  任务名称: {}", task.getName());
+                log.info("  拾取人: {}", userId);
+                log.info("  所属候选组: {} ({})", group.getName(), group.getId());
+                log.info("  流程实例ID: {}", task.getProcessInstanceId());
+                
+                taskClaimed = true;
+                break;  // 拾取一个任务后退出循环
+            }
+        }
+        
+        // 5. 如果所有分组都没有可拾取的任务
+        if (!taskClaimed) {
+            log.info("\n用户 '{}' 所属的所有分组当前都没有可拾取的任务", userId);
+        }
+    }
+
+    /**
+     * 候选组成员查看所有可拾取的任务
+     */
+    @Test
+    public void viewAllClaimableTasks() {
+        String userId = "wowo";
+        
+        // 1. 查询用户所属的所有分组
+        List<org.camunda.bpm.engine.identity.Group> userGroups = identityService.createGroupQuery()
+                .groupMember(userId)
+                .list();
+        
+        log.info("用户 '{}' 所属分组数: {}", userId, userGroups != null ? userGroups.size() : 0);
+        
+        if (userGroups == null || userGroups.isEmpty()) {
+            log.warn("用户 '{}' 未加入任何分组", userId);
+            return;
+        }
+        
+        int totalTasks = 0;
+        
+        // 2. 遍历每个分组，查询可拾取的任务
+        for (org.camunda.bpm.engine.identity.Group group : userGroups) {
+            log.info("\n=== 分组: {} (ID: {}, 类型: {}) ===", group.getName(), group.getId(), group.getType());
+            
+            List<Task> tasks = taskService.createTaskQuery()
+                    .taskCandidateGroup(group.getId())
+                    .taskUnassigned()
+                    .list();
+            
+            if (tasks != null && !tasks.isEmpty()) {
+                log.info("可拾取任务数: {}", tasks.size());
+                totalTasks += tasks.size();
+                
+                for (Task task : tasks) {
+                    log.info("  - 任务ID: {}, 任务名称: {}, 创建时间: {}", 
+                        task.getId(), task.getName(), task.getCreateTime());
+                }
+            } else {
+                log.info("该分组暂无可拾取任务");
+            }
+        }
+        
+        log.info("\n总计: 用户 '{}' 在所有分组中共有 {} 个可拾取任务", userId, totalTasks);
     }
 
     /**

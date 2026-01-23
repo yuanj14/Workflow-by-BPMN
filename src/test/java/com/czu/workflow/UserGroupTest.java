@@ -210,7 +210,7 @@ public class UserGroupTest {
      */
     @Test
     public void addUserToGroup() {
-        String userId = "zhangsan";
+        String userId = "wowo";
         String groupId = "jxGroup";
         identityService.createMembership(userId, groupId);
         log.info("用户 {} 已添加到分组 {}", userId, groupId);
