@@ -119,11 +119,11 @@ public class UserGroupTest {
      */
     @Test
     public void createUser() {
-        User user = identityService.newUser("zhangsan");
-        user.setFirstName("张");
-        user.setLastName("三");
-        user.setEmail("zhangsan@example.com");
-        user.setPassword("123456");
+        User user = identityService.newUser("guodd");
+        user.setFirstName("端端");
+        user.setLastName("郭");
+        user.setEmail("guoddd@example.com");
+        user.setPassword("1234");
         identityService.saveUser(user);
         log.info("用户创建成功: ID={}, 姓名={} {}", user.getId(), user.getFirstName(), user.getLastName());
     }
